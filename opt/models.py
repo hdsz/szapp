@@ -59,24 +59,26 @@ class Instcategory(db.Model):
     __tablename__ = 'instcategory'
     id = db.Column(db.Integer, primary_key=True)
     catname=db.Column(db.String(20), nullable=False)
+    type_inst=db.Column(db.String(20), nullable=False)
+    desc_inst=db.Column(db.String(8), nullable=False)
     catdesc=db.Column(db.String(20), nullable=False)
     
     
     #relationships
-    instname= db.relationship('Instrument', backref='category', lazy=True)
+    instname= db.relationship('Stock', backref='category', lazy=True)
     
     def __repr__(self):
         return f"Instcategory('{self.cname}')"
 
 
 
-class Instrument(db.Model):
-    __tablename__ = 'instrument'
+class Stock(db.Model):
+    __tablename__ = 'stock'
     id = db.Column(db.Integer, primary_key=True)
      #underyling name/description
-    type_inst=db.Column(db.String(20), nullable=False)
-    desc_inst=db.Column(db.String(20), nullable=False)
-    sym_inst=db.Column(db.String(8), nullable=False)
+    stock_sym=db.Column(db.String(20), nullable=False)
+    stock_name=db.Column(db.String(20), nullable=False)
+       
 
     #relationships
     opt_list=db.relationship('Options', backref='underlying', lazy=True)
@@ -85,8 +87,39 @@ class Instrument(db.Model):
    
     
     def __repr__(self):
-        return f"Instrument('{self.type_inst}')"
+        return f"Stock('{self.stock_sym}', '{self.stock_name}')"
 
+      
+class Futures(db.Model):
+    __tablename__ = 'futures'
+    id = db.Column(db.Integer, primary_key=True)
+     #underyling name/description
+    fut_name=db.Column(db.String(20), nullable=False)
+    fut_sym=db.Column(db.String(8), nullable=False)
+    fut_exp=db.Column(db.DateTime, default=datetime.utcnow) 
+
+    #relationships
+    opt_list=db.relationship('Options', backref='underlying', lazy=True)
+    #foreign keys
+    catid = db.Column(db.Integer, db.ForeignKey('instcategory.id'), nullable=False)
+    month_id=db.Column(db.Integer, db.ForeignKey('month.id'), nullable=False)
+    
+    def __repr__(self):
+        return f"Futures('{self.fut_name}', '{self.fut_sym}', '{self.fut_exp}')"
+
+class Month(db.Model):
+    __tablename__ = 'month'
+    id = db.Column(db.Integer, primary_key=True)
+     #underyling name/description
+    month_name=db.Column(db.String(20), nullable=False)
+    month_letter=db.Column(db.String(8), nullable=False)
+    
+   #relationship
+   month_ctr=db.Column('Futures',backref='contract', lazy=True)
+   
+   def __repr__(self):
+      return f"Instrument('{self.type_inst}')"
+   
 class Options(db.Model):
     __tablename__ = 'options'
     id = db.Column(db.Integer, primary_key=True)
@@ -108,7 +141,7 @@ class Options(db.Model):
     date_val=db.Column(db.DateTime, default=datetime.utcnow) 
 
     #Foreign Keys
-    inst_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), nullable=False)
+    stock_id = db.Column(db.Integer, db.ForeignKey('stock.id'), nullable=False)
 
     def __repr__(self):
         return f"Options('{self.opt_sym}','{self.opt_strike}', '{self.exp_date}')"
