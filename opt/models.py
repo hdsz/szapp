@@ -62,7 +62,7 @@ class Instrument(db.Model):
     descr_inst=db.Column(db.String(20), nullable=False)
     
     #relationships
-    instname= db.relationship('Stock', backref='instrument', lazy=True)
+    instname= db.relationship('Stock', backref='inst_fin', lazy=True)
     
     def __repr__(self):
         return f"Instrument('{self.name_inst}')"
@@ -77,12 +77,11 @@ class Stock(db.Model):
     stock_sym=db.Column(db.String(20), nullable=False)
        
     #relationships
-    opt_list=db.relationship('Options', backref='underlying', lazy=True)
-    company_l=db.relationship('Companies', backref='stock', lazy=True)  
+    #opt_list=db.relationship('Options', backref='underlying', lazy=True)
+    company_l=db.relationship('Companies', backref='stock_exch', lazy=True)  
       
     #foreign keys
     inst_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), nullable=False)
-   
     
     def __repr__(self):
         return f"Stock('{self.stock_sym}', '{self.stock_name}')"
@@ -98,12 +97,11 @@ class Companies(db.Model):
    stock_id = db.Column(db.Integer,db.ForeignKey('stock.id'), nullable=False)
    
    def __repr__(self):
-      return f"Companies('{self.name_company}','{sym_company}')"
+       return f"Companies('{self.name_company}','{self.sym_company}')"
       
 class Futures(db.Model):
     __tablename__ = 'futures'
     id = db.Column(db.Integer, primary_key=True)
-     #underyling name/description
     fut_name=db.Column(db.String(20), nullable=False)
     fut_sym=db.Column(db.String(8), nullable=False)
    
@@ -114,7 +112,7 @@ class Futures(db.Model):
     inst_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), nullable=False)
     
     def __repr__(self):
-        return f"Futures('{self.fut_name}', '{self.fut_sym}'"
+        return f"Futures('{self.fut_name}', '{self.fut_sym}')"
       
 class FutContract(db.Model):
     __tablename__ = 'futcontract'
@@ -127,27 +125,26 @@ class FutContract(db.Model):
     fut_sett=db.Column(db.Float(8),nullable=True)
     
     #relationships
-    fut_list=db.relationship('Options', backref='futcontract', lazy=True)
-   
+    fut_list=db.relationship('Options', backref='fut_ctr', lazy=True)
     #foreign keys
     fut_id=db.Column(db.Integer,db.ForeignKey('futures.id'),nullable=False)  
-    month_id = db.Column(db.Integer, db.ForeignKey('month.id'), nullable=False)
+   # month_f=db.Column(db.Integer,db.ForeignKey('monthc.id'),nullable=False)
     
     def __repr__(self):
-        return f"Futures('{self.futctr_sym}', '{self.fut_price}','{self.fut_sett}' '{self.fut_exp}'"    
+        return f"FutContract('{self.futctr_sym}', '{self.fut_price}','{self.fut_sett}' ,'{self.fut_exp}')"    
       
   
-class Month(db.Model):
-    __tablename__ = 'month'
+class MonthC(db.Model):
+    __tablename__= 'month'
     id = db.Column(db.Integer, primary_key=True)
     month_name=db.Column(db.String(20), nullable=False)
     month_letter=db.Column(db.String(8), nullable=False)
     
    #relationship
-    month_ctr=db.Column('FutContract',backref='month', lazy=True)
+   # month_ctr=db.Column('FutContract',backref='month_fut',lazy=True)
    
     def __repr__(self):
-      return f"Instrument('{self.type_inst}')"
+        return f"MonthC('{self.month_name}','{self.month_letter}')"
    
 class Options(db.Model):
     __tablename__ = 'options'
@@ -163,39 +160,41 @@ class Options(db.Model):
     exp_date=db.Column(db.DateTime, default=datetime.utcnow) 
     #date of estimated value. for instance in 10 days
     date_val=db.Column(db.DateTime, default=datetime.utcnow) 
-    vol_opt=db.Columb(db.Float(6),nullable=False, default=0.30) 
+    vol_opt=db.Column(db.Float(6),nullable=False, default=0.30) 
       
     #relationship
-    greeks=db.relationship('Greeks',backref='option', lazy=True)
+   # greeks=db.relationship('GreeksOpt',backref='option', lazy=True)
       
     #Foreign Keys
     futctr_id = db.Column(db.Integer, db.ForeignKey('futcontract.id'), nullable=False)
 
     def __repr__(self):
         return f"Options('{self.opt_sym}','{self.opt_strike}', '{self.exp_date}','{self.theo_price}')"
-      
-      
-class Greeks(db.Model):
-   __tablename__='greeks'
-   delta_put=db.Column(db.Float(10),nullable=False)
-   delta_call=db.Column(db.Float(10),nullable=False)
+
+
+'''
+class GreeksOpt(db.Model):
+    __tablename__='greeksopt'
+    delta_put=db.Column(db.Float(10),nullable=False)
+    delta_call=db.Column(db.Float(10),nullable=False)
    
-   gamma_put=db.Column(db.Float(10),nullable=False)
-   gamma_call=db.Column(db.Float(10),nullable=False)
+    gamma_put=db.Column(db.Float(10),nullable=False)
+    gamma_call=db.Column(db.Float(10),nullable=False)
     
-   theta_put=db.Column(db.Float(10),nullable=False)
-   theta_call=db.Column(db.Float(10),nullable=False)
+    theta_put=db.Column(db.Float(10),nullable=False)
+    theta_call=db.Column(db.Float(10),nullable=False)
    
-   vega_put=db.Column(db.Float(10),nullable=False)
-   vega_call=db.Column(db.Float(10),nullable=False)
+    vega_put=db.Column(db.Float(10),nullable=False)
+    vega_call=db.Column(db.Float(10),nullable=False)
    
-   rho_put=db.Column(db.Float(10),nullable=False)
-   rho_call=db.Column(db.Float(10),nullable=False)
+    rho_put=db.Column(db.Float(10),nullable=False)
+    rho_call=db.Column(db.Float(10),nullable=False)
    
    #Foreign Keys
-   opt_id = db.Column(db.Integer, db.ForeignKey('options.id'), nullable=False)
+    opt_id = db.Column(db.Integer, db.ForeignKey('options.id'), nullable=False)
    
    
-   def __repr__(self):
-        return f"Greeks('{self.delta_put}','{self.gamma_put}', '{self.theta_put}','{self.vega_put}', {'self.rho_put'})"
-        return f"Greeks('{self.delta_call}','{self.gamma_call}', '{self.theta_call}','{self.vega_call}', {'self.rho_call'})"
+    def __repr__(self):
+        return f"GreeksOpt('{self.delta_put}','{self.gamma_put}', '{self.theta_put}','{self.vega_put}', '{self.rho_put}')"
+        #return f"Greeks('{self.delta_call}','{self.gamma_call}', '{self.theta_call}','{self.vega_call}', {'self.rho_call'})"
+'''
