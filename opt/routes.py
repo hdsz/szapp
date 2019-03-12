@@ -284,7 +284,7 @@ def special_requirement(f):
 def instrument():
     form=NewInstrument()
     if form.validate_on_submit():
-        new_inst= Instrument(type_inst=form.inst_name.data, desc_inst=form.inst_des.data)
+        new_inst= Instrument(name_inst=form.inst_name.data, descr_inst=form.inst_des.data)
         db.session.add(new_inst)
         db.session.commit()
         flash(f'The instrument {form.inst_name.data} has been created', 'success')

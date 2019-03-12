@@ -30,6 +30,7 @@ class RegistrationForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
+
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
@@ -83,8 +84,10 @@ class ResetPasswordForm(FlaskForm):
 #OPTIONS DATAFORM
 
 class OptionForm(FlaskForm):
+    date_calc=StringField('Date Calculation',
+                          validators=[DataRequired(), Length(min=2, max=20)])
     ul_name = StringField('Underlying Name',
-                           validators=[DataRequired(), Length(min=2, max=20)])
+                            validators=[DataRequired(), Length(min=2, max=20)])
     ul_symbol = StringField('Underyling Symbol',
                         validators=[DataRequired(), Length(min=2, max=8)])
     ul_price = StringField('Underyling Price',
@@ -93,7 +96,8 @@ class OptionForm(FlaskForm):
                         validators=[DataRequired(), Length(min=2, max=8)])
     exp_date = StringField('Expiry Date',
                         validators=[DataRequired(), Length(min=2, max=8)])
- 
+    date_val=StringField('Date Valorization',
+                          validators=[DataRequired(), Length(min=2, max=20)])
     submit = SubmitField('Calculate')
 
    
