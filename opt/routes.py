@@ -6,7 +6,7 @@ from datetime import datetime
 #from Pillow import Image
 from opt.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
                              PostForm, RequestResetForm, ResetPasswordForm, OptionForm, NewInstrument)
-from opt.models import (User, Post,Instrument,Options, Futures, FutContract, Greeks,Companies,Stock,Month
+from opt.models import (User, Post,Instrument,Options, Futures, FutContract, Greeks,Companies,Stock,Month)
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug import secure_filename
 import os

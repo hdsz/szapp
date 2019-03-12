@@ -78,7 +78,7 @@ class Stock(db.Model):
        
     #relationships
     opt_list=db.relationship('Options', backref='underlying', lazy=True)
-    company_l=db.realtionship('Companies', backref='stock', lazy=True)  
+    company_l=db.relationship('Companies', backref='stock', lazy=True)  
       
     #foreign keys
     inst_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), nullable=False)
@@ -92,7 +92,7 @@ class Companies(db.Model):
    __tablename__='companies'
    id=db.Column(db.Integer,primary_key=True)
    name_company=db.Column(db.String(30), nullable=False)
-   sym_company=db.Column(db.String(8), nuallable=False)
+   sym_company=db.Column(db.String(8), nullable=False)
    
    #foreign key
    stock_id = db.Column(db.Integer,db.ForeignKey('stock.id'), nullable=False)
