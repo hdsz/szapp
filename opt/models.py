@@ -98,7 +98,7 @@ class Companies(db.Model):
    stock_id = db.Column(db.Integer,db.ForeignKey('stock.id'), nullable=False)
    
    def __repr__(self):
-      return f"Companies('{self.name_company}','{sym_company}')
+      return f"Companies('{self.name_company}','{sym_company}')"
       
 class Futures(db.Model):
     __tablename__ = 'futures'
@@ -144,9 +144,9 @@ class Month(db.Model):
     month_letter=db.Column(db.String(8), nullable=False)
     
    #relationship
-   month_ctr=db.Column('FutContract',backref='month', lazy=True)
+    month_ctr=db.Column('FutContract',backref='month', lazy=True)
    
-   def __repr__(self):
+    def __repr__(self):
       return f"Instrument('{self.type_inst}')"
    
 class Options(db.Model):
@@ -175,7 +175,7 @@ class Options(db.Model):
         return f"Options('{self.opt_sym}','{self.opt_strike}', '{self.exp_date}','{self.theo_price}')"
       
       
- class Greeks(db.Model)
+class Greeks(db.Model):
    __tablename__='greeks'
    delta_put=db.Column(db.Float(10),nullable=False)
    delta_call=db.Column(db.Float(10),nullable=False)
