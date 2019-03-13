@@ -128,21 +128,21 @@ class FutContract(db.Model):
     fut_list=db.relationship('Options', backref='fut_ctr', lazy=True)
     #foreign keys
     fut_id=db.Column(db.Integer,db.ForeignKey('futures.id'),nullable=False)  
-    #month_f=db.Column(db.Integer,db.ForeignKey('monthc.id'),nullable=False)
+    ctrf_month=db.Column(db.Integer,db.ForeignKey('month_c.id'),nullable=False)  
     
     def __repr__(self):
         return f"FutContract('{self.futctr_sym}', '{self.fut_price}','{self.fut_sett}' ,'{self.fut_exp}')"    
       
   
 class MonthC(db.Model):
-    __tablename__= 'month'
+    __tablename__= 'month_c'
     id = db.Column(db.Integer, primary_key=True)
     month_name=db.Column(db.String(20), nullable=False)
     month_letter=db.Column(db.String(8), nullable=False)
     
    #relationship
-    #month_ctr=db.Column('FutContract',backref='month_fut',lazy=True)
-   
+    month_opt=db.relationship('Options', backref='ctr_month')
+    month_fut=db.relationship('FutContract', backref='ctrfut_month')
     def __repr__(self):
         return f"MonthC('{self.month_name}','{self.month_letter}')"
    
@@ -167,7 +167,7 @@ class Options(db.Model):
       
     #Foreign Keys
     futctr_id = db.Column(db.Integer, db.ForeignKey('futcontract.id'), nullable=False)
-
+    contract= db.Column(db.Integer, db.ForeignKey('month_c.id'), nullable=False)
     def __repr__(self):
         return f"Options('{self.opt_sym}','{self.opt_strike}', '{self.exp_date}','{self.theo_price}')"
 
@@ -197,4 +197,4 @@ class GreeksOpt(db.Model):
    
     def __repr__(self):
         return f"GreeksOpt('{self.delta_put}','{self.gamma_put}', '{self.theta_put}','{self.vega_put}', '{self.rho_put}')"
-        #return f"Greeks('{self.delta_call}','{self.gamma_call}', '{self.theta_call}','{self.vega_call}', {'self.rho_call'})"
+        return f"Greeks('{self.delta_call}','{self.gamma_call}', '{self.theta_call}','{self.vega_call}', {'self.rho_call'})"
