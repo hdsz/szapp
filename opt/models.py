@@ -35,24 +35,49 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
 
-
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
 
 
 
+   
+   
 class Post(db.Model):
     __tablename__ = 'post'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
-    #foreign key
+   
+   #relationship 
+   comments=db.relationship('Comment',backref='author',lazy=True)
+   
+   
+   #foreign key
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
 
+      
+class Comment(db.Model):
+    __tablename__='comment'
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(100), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+   
+   
+   #foreign key
+   post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Comment('{self.body}', '{self.timestamp}')"  
+      
+      
+      
+      
+      
+      
 
 #to define the category of underlying/Instrument: underyling or derivative
 class Instrument(db.Model):
