@@ -100,7 +100,7 @@ class OptionForm(FlaskForm):
                           validators=[DataRequired(), Length(min=2, max=20)])
     submit = SubmitField('Calculate')
 
-   
+    
  
 class NewInstrument(FlaskForm):
     inst_name = StringField('Instrument Name',
@@ -112,6 +112,6 @@ class NewInstrument(FlaskForm):
     submit = SubmitField('Save')
 
     def validate_instrument(self, inst_name):
-        instrument = Instrument.query.filter_by(type_inst=inst_name.data).first()
+        instrument = Instrument.query.filter_by(name_inst=inst_name.data).first()
         if instrument:
             raise ValidationError('That instrument exist already')
